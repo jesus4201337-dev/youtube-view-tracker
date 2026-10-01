@@ -175,15 +175,62 @@ tr.spike{
   font-weight:700;
 }
 
+/* Easter egg */
+#easterEgg{
+  position:fixed;
+  top:14px;
+  left:14px;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  overflow:hidden;
+  cursor:pointer;
+  z-index:9999;
+  border:2px solid rgba(255,255,255,.5);
+  box-shadow:0 4px 15px rgba(0,0,0,.5);
+  transition:transform .15s ease;
+}
+
+#easterEgg:hover{
+  transform:scale(1.08);
+}
+
+#easterEgg:active{
+  transform:scale(.95);
+}
+
+#easterEgg img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
 @media(max-width:750px){
   .stats{
     grid-template-columns:repeat(2,1fr);
+  }
+
+  #easterEgg{
+    width:55px;
+    height:55px;
+    top:10px;
+    left:10px;
   }
 }
 </style>
 </head>
 
 <body>
+
+<!-- Easter egg -->
+<div id="easterEgg" title="...">
+  <img src="./face.png" alt="">
+</div>
+
+<audio id="easterEggSound" preload="auto">
+  <source src="./easteregg.mp3" type="audio/mpeg">
+</audio>
 
 <div class="wrap">
 
@@ -273,6 +320,28 @@ tr.spike{
 <script>
 (() => {
 
+  /* =========================
+     EASTER EGG
+     ========================= */
+
+  const easterEgg = document.getElementById('easterEgg');
+  const easterEggSound = document.getElementById('easterEggSound');
+
+  easterEgg.addEventListener('click', () => {
+
+    easterEggSound.currentTime = 0;
+
+    easterEggSound.play().catch(error => {
+      console.log('Could not play easter egg sound:', error);
+    });
+
+  });
+
+
+  /* =========================
+     VIEW TRACKER
+     ========================= */
+
   const csvURL = './views.csv';
 
   const canvas = document.getElementById('chart');
@@ -290,9 +359,15 @@ tr.spike{
     Number(n).toLocaleString('en-GB');
 
   const shortNumber = n => {
-    if(Math.abs(n) >= 1e9) return (n/1e9).toFixed(1)+'B';
-    if(Math.abs(n) >= 1e6) return (n/1e6).toFixed(1)+'M';
-    if(Math.abs(n) >= 1e3) return (n/1e3).toFixed(1)+'K';
+    if(Math.abs(n) >= 1e9)
+      return (n/1e9).toFixed(1)+'B';
+
+    if(Math.abs(n) >= 1e6)
+      return (n/1e6).toFixed(1)+'M';
+
+    if(Math.abs(n) >= 1e3)
+      return (n/1e3).toFixed(1)+'K';
+
     return Math.round(n).toString();
   };
 
@@ -300,7 +375,8 @@ tr.spike{
 
     const lines = text.trim().split(/\r?\n/);
 
-    if(lines.length < 2) return [];
+    if(lines.length < 2)
+      return [];
 
     const headers =
       lines[0].split(',').map(x => x.trim());
@@ -350,7 +426,8 @@ tr.spike{
     if(selectedRange === 'all')
       return [...rows];
 
-    const last = rows.at(-1).date.getTime();
+    const last =
+      rows.at(-1).date.getTime();
 
     const durations = {
       '30m':30 * 60 * 1000,
@@ -360,7 +437,8 @@ tr.spike{
       '7d':7 * 24 * 60 * 60 * 1000
     };
 
-    const start = last - durations[selectedRange];
+    const start =
+      last - durations[selectedRange];
 
     return rows.filter(r =>
       r.date.getTime() >= start
@@ -369,17 +447,22 @@ tr.spike{
 
   function setupCanvas(c){
 
-    const dpr = window.devicePixelRatio || 1;
+    const dpr =
+      window.devicePixelRatio || 1;
 
-    const rect = c.getBoundingClientRect();
+    const rect =
+      c.getBoundingClientRect();
 
-    const W = Math.max(rect.width,700);
+    const W =
+      Math.max(rect.width,700);
+
     const H = 480;
 
     c.width = W * dpr;
     c.height = H * dpr;
 
-    const context = c.getContext('2d');
+    const context =
+      c.getContext('2d');
 
     context.setTransform(
       dpr,0,0,dpr,0,0
@@ -405,8 +488,11 @@ tr.spike{
     empty.hidden = true;
     canvas.hidden = false;
 
-    const {context: c,W,H} =
-      setupCanvas(canvas);
+    const {
+      context:c,
+      W,
+      H
+    } = setupCanvas(canvas);
 
     const left=70;
     const right=22;
@@ -424,7 +510,10 @@ tr.spike{
       ...rows.map(r=>r.views)
     );
 
-    const range=Math.max(max-min,1);
+    const range=Math.max(
+      max-min,
+      1
+    );
 
     const lo=Math.max(
       0,
@@ -449,9 +538,10 @@ tr.spike{
 
     for(let i=0;i<=5;i++){
 
-      const yy=top+i*ph/5;
+      const yy =
+        top+i*ph/5;
 
-      const val=
+      const val =
         hi-(hi-lo)*i/5;
 
       c.strokeStyle='#29292c';
@@ -543,10 +633,14 @@ tr.spike{
 
   function drawGainChart(rows){
 
-    if(!rows.length) return;
+    if(!rows.length)
+      return;
 
-    const {context:c,W,H} =
-      setupCanvas(gainCanvas);
+    const {
+      context:c,
+      W,
+      H
+    } = setupCanvas(gainCanvas);
 
     const left=70;
     const right=22;
@@ -558,9 +652,11 @@ tr.spike{
 
     const gains=rows.map((r,i) => {
 
-      if(i === 0) return 0;
+      if(i === 0)
+        return 0;
 
-      return r.views - rows[i-1].views;
+      return r.views -
+             rows[i-1].views;
     });
 
     const max=Math.max(
@@ -597,9 +693,10 @@ tr.spike{
 
     for(let i=0;i<=5;i++){
 
-      const yy=top+i*ph/5;
+      const yy =
+        top+i*ph/5;
 
-      const val=
+      const val =
         hi-(hi-lo)*i/5;
 
       c.strokeStyle='#29292c';
@@ -640,7 +737,6 @@ tr.spike{
 
     c.strokeStyle='#fff';
     c.lineWidth=2;
-
     c.stroke();
 
     gains.forEach((g,i)=>{
@@ -650,13 +746,13 @@ tr.spike{
       c.arc(
         x(i),
         y(g),
-        Math.abs(g) > 1000 ? 5 : 3,
+        Math.abs(g)>1000 ? 5 : 3,
         0,
         Math.PI*2
       );
 
       c.fillStyle =
-        Math.abs(g) > 1000
+        Math.abs(g)>1000
         ? '#fff'
         : '#aaa';
 
@@ -684,14 +780,13 @@ tr.spike{
   function drawTable(rows){
 
     const tbody =
-      document.getElementById('dataTable');
+      document.getElementById(
+        'dataTable'
+      );
 
     tbody.innerHTML='';
 
-    const reversed =
-      [...rows].reverse();
-
-    reversed.forEach((row,index)=>{
+    [...rows].reverse().forEach(row=>{
 
       const globalIndex =
         allRows.indexOf(row);
@@ -713,10 +808,17 @@ tr.spike{
         tr.className='spike';
 
       tr.innerHTML=`
-        <td>${row.date.toLocaleString('en-GB')}</td>
-        <td>${number(row.views)}</td>
+        <td>
+          ${row.date.toLocaleString('en-GB')}
+        </td>
+
+        <td>
+          ${number(row.views)}
+        </td>
+
         <td class="gain-positive">
-          ${gain >= 0 ? '+' : ''}${number(gain)}
+          ${gain >= 0 ? '+' : ''}
+          ${number(gain)}
         </td>
       `;
 
@@ -726,7 +828,8 @@ tr.spike{
 
   function updateStats(){
 
-    if(!allRows.length) return;
+    if(!allRows.length)
+      return;
 
     const first=allRows[0];
     const last=allRows.at(-1);
@@ -737,28 +840,35 @@ tr.spike{
     const hours =
       (last.date-first.date)/3600000;
 
-    document.getElementById('current')
-      .textContent=number(last.views);
+    document.getElementById(
+      'current'
+    ).textContent=
+      number(last.views);
 
-    document.getElementById('gained')
-      .textContent=number(gained);
+    document.getElementById(
+      'gained'
+    ).textContent=
+      number(gained);
 
-    document.getElementById('rate')
-      .textContent=
+    document.getElementById(
+      'rate'
+    ).textContent=
       hours>0
       ? number(Math.round(gained/hours))
       : '—';
 
-    document.getElementById('duration')
-      .textContent=
+    document.getElementById(
+      'duration'
+    ).textContent=
       hours<1
       ? Math.round(hours*60)+'m'
       : hours<24
       ? hours.toFixed(1)+'h'
       : (hours/24).toFixed(1)+'d';
 
-    document.getElementById('connection')
-      .textContent=
+    document.getElementById(
+      'connection'
+    ).textContent=
       'Live · updated '+
       last.date.toLocaleTimeString(
         'en-GB',
@@ -780,8 +890,9 @@ tr.spike{
     drawGainChart(rows);
     drawTable(rows);
 
-    document.getElementById('status')
-      .textContent=
+    document.getElementById(
+      'status'
+    ).textContent=
       `${allRows.length} data points · Automatically checking views.csv every 60 seconds`;
   }
 
@@ -833,11 +944,11 @@ tr.spike{
 
   document
     .querySelectorAll('.range-btn')
-    .forEach(button => {
+    .forEach(button=>{
 
       button.addEventListener(
         'click',
-        () => {
+        ()=>{
 
           selectedRange =
             button.dataset.range;
