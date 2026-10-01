@@ -1,4 +1,3 @@
-```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,15 +10,15 @@
 
 body{
   margin:0;
-  background:#0d0d0f;
+  background:#0d0d0f url('./musztarda.jpg') center center / cover fixed no-repeat;
   color:#f5f5f5;
-  font-family:Arial,Helvetica,sans-serif
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 .wrap{
   max-width:1100px;
   margin:0 auto;
-  padding:28px 20px
+  padding:28px 20px;
 }
 
 .top{
@@ -28,158 +27,157 @@ body{
   align-items:end;
   gap:20px;
   flex-wrap:wrap;
-  margin-bottom:22px
+  margin-bottom:22px;
 }
 
 h1{
   font-size:25px;
-  margin:0 0 5px
+  margin:0 0 5px;
 }
 
 .sub{
-  color:#999;
-  font-size:14px
+  color:#bbb;
+  font-size:14px;
 }
 
 .badge{
   font-size:12px;
   color:#aaa;
-  border:1px solid #333;
+  border:1px solid #444;
   border-radius:20px;
-  padding:7px 10px
+  padding:7px 10px;
+  background:rgba(0,0,0,.55);
 }
 
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:12px;
-  margin-bottom:16px
+  margin-bottom:16px;
+}
+
+.card,
+.panel{
+  background:rgba(23,23,25,.92);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,.35);
 }
 
 .card{
-  background:#171719;
-  border:1px solid #29292c;
-  border-radius:12px;
-  padding:15px
+  padding:15px;
 }
 
 .label{
   font-size:12px;
   color:#999;
-  margin-bottom:7px
+  margin-bottom:7px;
 }
 
 .value{
   font-size:24px;
-  font-weight:700
+  font-weight:700;
 }
 
 .controls{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
-  margin-bottom:12px
+  margin-bottom:16px;
 }
 
-button{
-  background:#171719;
+.range-btn{
+  background:rgba(23,23,25,.9);
   color:#aaa;
   border:1px solid #333;
   border-radius:8px;
-  padding:9px 13px;
+  padding:8px 12px;
   cursor:pointer;
-  font-size:13px
+  font-size:13px;
 }
 
-button:hover{
-  background:#222225;
-  color:#fff
+.range-btn:hover{
+  background:#222;
+  color:#fff;
 }
 
-button.active{
-  background:#f5f5f5;
+.range-btn.active{
+  background:#fff;
   color:#111;
-  border-color:#f5f5f5
+  border-color:#fff;
 }
 
 .panel{
-  background:#171719;
-  border:1px solid #29292c;
-  border-radius:12px;
   padding:18px;
-  margin-bottom:16px
+  margin-bottom:16px;
 }
 
 .panel-title{
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:12px
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:12px;
 }
 
 .chart-wrap{
   width:100%;
-  overflow-x:auto
+  overflow-x:auto;
 }
 
 canvas{
   display:block;
   width:100%;
   height:480px;
-  min-width:700px
+  min-width:700px;
 }
 
 .empty{
   text-align:center;
   padding:170px 10px;
-  color:#777
+  color:#777;
 }
 
 .status{
   margin-top:10px;
   color:#888;
-  font-size:13px
+  font-size:13px;
 }
 
 .table-wrap{
+  width:100%;
   overflow-x:auto;
-  max-height:400px;
-  overflow-y:auto
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:13px
+  font-size:13px;
 }
 
 th{
-  color:#888;
   text-align:left;
+  color:#888;
   font-weight:normal;
-  padding:9px 8px;
-  border-bottom:1px solid #29292c;
-  position:sticky;
-  top:0;
-  background:#171719
+  padding:10px;
+  border-bottom:1px solid #333;
 }
 
 td{
-  padding:9px 8px;
-  border-bottom:1px solid #222225
+  padding:10px;
+  border-bottom:1px solid #29292c;
+}
+
+tr.spike{
+  background:rgba(255,255,255,.08);
 }
 
 .gain-positive{
   color:#fff;
-  font-weight:bold
-}
-
-.spike{
-  background:#242426
+  font-weight:700;
 }
 
 @media(max-width:750px){
   .stats{
-    grid-template-columns:repeat(2,1fr)
+    grid-template-columns:repeat(2,1fr);
   }
 }
 </style>
@@ -200,11 +198,7 @@ td{
     </div>
   </div>
 
-
-  <!-- STATS -->
-
   <div class="stats">
-
     <div class="card">
       <div class="label">CURRENT VIEWS</div>
       <div class="value" id="current">—</div>
@@ -224,31 +218,19 @@ td{
       <div class="label">TRACKING TIME</div>
       <div class="value" id="duration">—</div>
     </div>
-
   </div>
-
-
-  <!-- TIME CONTROLS -->
 
   <div class="controls">
-
-    <button data-range="30m">Last 30 minutes</button>
-    <button data-range="1h">Last hour</button>
-    <button data-range="6h">Last 6 hours</button>
-    <button data-range="24h">Last 24 hours</button>
-    <button data-range="7d">Last 7 days</button>
-    <button data-range="all" class="active">All time</button>
-
+    <button class="range-btn" data-range="30m">Last 30 minutes</button>
+    <button class="range-btn" data-range="1h">Last hour</button>
+    <button class="range-btn" data-range="6h">Last 6 hours</button>
+    <button class="range-btn" data-range="24h">Last 24 hours</button>
+    <button class="range-btn" data-range="7d">Last 7 days</button>
+    <button class="range-btn active" data-range="all">All time</button>
   </div>
 
-
-  <!-- TOTAL VIEWS GRAPH -->
-
   <div class="panel">
-
-    <div class="panel-title">
-      Total Views
-    </div>
+    <div class="panel-title">Total Views</div>
 
     <div id="empty" class="empty">
       Waiting for <b>views.csv</b> in this directory…
@@ -258,40 +240,22 @@ td{
       <canvas id="chart" hidden></canvas>
     </div>
 
+    <div class="status" id="status"></div>
   </div>
 
-
-  <!-- VIEWS PER MINUTE GRAPH -->
-
   <div class="panel">
-
-    <div class="panel-title">
-      Views Gained Between Updates
-    </div>
+    <div class="panel-title">Views Gained Between Updates</div>
 
     <div class="chart-wrap">
-      <canvas id="gainChart" hidden></canvas>
+      <canvas id="gainChart"></canvas>
     </div>
-
-    <div class="status">
-      Each point shows how many views were gained since the previous tracker update.
-    </div>
-
   </div>
 
-
-  <!-- DATA TABLE -->
-
   <div class="panel">
-
-    <div class="panel-title">
-      Recorded Updates
-    </div>
+    <div class="panel-title">Recorded Updates</div>
 
     <div class="table-wrap">
-
       <table>
-
         <thead>
           <tr>
             <th>Time</th>
@@ -299,20 +263,12 @@ td{
             <th>Views Gained</th>
           </tr>
         </thead>
-
         <tbody id="dataTable"></tbody>
-
       </table>
-
     </div>
-
   </div>
 
-
-  <div class="status" id="status"></div>
-
 </div>
-
 
 <script>
 (() => {
@@ -330,49 +286,28 @@ td{
   let allRows = [];
   let selectedRange = 'all';
 
-
-  /* -----------------------------
-     NUMBER FORMATTING
-  ----------------------------- */
-
   const number = n =>
     Number(n).toLocaleString('en-GB');
 
-
   const shortNumber = n => {
-
-    if(Math.abs(n)>=1e9)
-      return (n/1e9).toFixed(1)+'B';
-
-    if(Math.abs(n)>=1e6)
-      return (n/1e6).toFixed(1)+'M';
-
-    if(Math.abs(n)>=1e3)
-      return (n/1e3).toFixed(1)+'K';
-
+    if(Math.abs(n) >= 1e9) return (n/1e9).toFixed(1)+'B';
+    if(Math.abs(n) >= 1e6) return (n/1e6).toFixed(1)+'M';
+    if(Math.abs(n) >= 1e3) return (n/1e3).toFixed(1)+'K';
     return Math.round(n).toString();
-
   };
-
-
-  /* -----------------------------
-     CSV PARSER
-  ----------------------------- */
 
   function parseCSV(text){
 
     const lines = text.trim().split(/\r?\n/);
 
-    if(lines.length < 2)
-      return [];
+    if(lines.length < 2) return [];
 
     const headers =
-      lines[0].split(',').map(x=>x.trim());
+      lines[0].split(',').map(x => x.trim());
 
     return lines.slice(1).map(line => {
 
       const vals = [];
-
       let cur = '';
       let quote = false;
 
@@ -389,14 +324,13 @@ td{
         }else{
           cur += c;
         }
-
       }
 
       vals.push(cur);
 
       const o = {};
 
-      headers.forEach((h,i)=>{
+      headers.forEach((h,i) => {
         o[h] = vals[i] ?? '';
       });
 
@@ -411,155 +345,135 @@ td{
     );
   }
 
-
-  /* -----------------------------
-     TIME RANGE
-  ----------------------------- */
-
   function filterRows(rows){
 
     if(selectedRange === 'all')
-      return rows;
+      return [...rows];
 
-    const last = rows.at(-1);
+    const last = rows.at(-1).date.getTime();
 
-    if(!last)
-      return [];
+    const durations = {
+      '30m':30 * 60 * 1000,
+      '1h':60 * 60 * 1000,
+      '6h':6 * 60 * 60 * 1000,
+      '24h':24 * 60 * 60 * 1000,
+      '7d':7 * 24 * 60 * 60 * 1000
+    };
 
-    let milliseconds;
-
-    switch(selectedRange){
-
-      case '30m':
-        milliseconds = 30 * 60 * 1000;
-        break;
-
-      case '1h':
-        milliseconds = 60 * 60 * 1000;
-        break;
-
-      case '6h':
-        milliseconds = 6 * 60 * 60 * 1000;
-        break;
-
-      case '24h':
-        milliseconds = 24 * 60 * 60 * 1000;
-        break;
-
-      case '7d':
-        milliseconds = 7 * 24 * 60 * 60 * 1000;
-        break;
-
-      default:
-        return rows;
-    }
-
-    const start =
-      last.date.getTime() - milliseconds;
+    const start = last - durations[selectedRange];
 
     return rows.filter(r =>
       r.date.getTime() >= start
     );
   }
 
-
-  /* -----------------------------
-     DRAW TOTAL VIEWS GRAPH
-  ----------------------------- */
-
-  function drawTotalChart(rows){
-
-    if(!rows.length){
-      canvas.hidden = true;
-      return;
-    }
-
-    canvas.hidden = false;
+  function setupCanvas(c){
 
     const dpr = window.devicePixelRatio || 1;
 
-    const rect = canvas.getBoundingClientRect();
+    const rect = c.getBoundingClientRect();
 
     const W = Math.max(rect.width,700);
     const H = 480;
 
-    canvas.width = W*dpr;
-    canvas.height = H*dpr;
+    c.width = W * dpr;
+    c.height = H * dpr;
 
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const context = c.getContext('2d');
 
-    const left = 70;
-    const right = 22;
-    const top = 25;
-    const bottom = 55;
+    context.setTransform(
+      dpr,0,0,dpr,0,0
+    );
 
-    const pw = W-left-right;
-    const ph = H-top-bottom;
+    return {
+      context,
+      W,
+      H
+    };
+  }
 
-    const min =
-      Math.min(...rows.map(r=>r.views));
+  function drawTotalChart(rows){
 
-    const max =
-      Math.max(...rows.map(r=>r.views));
+    if(!rows.length){
 
-    const range =
-      Math.max(max-min,1);
+      empty.hidden = false;
+      canvas.hidden = true;
 
-    const lo =
-      Math.max(0,min-range*.08);
+      return;
+    }
 
-    const hi =
-      max+range*.08;
+    empty.hidden = true;
+    canvas.hidden = false;
 
-    const x = i =>
+    const {context: c,W,H} =
+      setupCanvas(canvas);
+
+    const left=70;
+    const right=22;
+    const top=25;
+    const bottom=55;
+
+    const pw=W-left-right;
+    const ph=H-top-bottom;
+
+    const min=Math.min(
+      ...rows.map(r=>r.views)
+    );
+
+    const max=Math.max(
+      ...rows.map(r=>r.views)
+    );
+
+    const range=Math.max(max-min,1);
+
+    const lo=Math.max(
+      0,
+      min-range*.08
+    );
+
+    const hi=max+range*.08;
+
+    const x=i =>
       left +
       (rows.length===1
         ? pw/2
         : i/(rows.length-1)*pw);
 
-    const y = v =>
+    const y=v =>
       top +
       (1-(v-lo)/(hi-lo))*ph;
 
+    c.clearRect(0,0,W,H);
 
-    ctx.clearRect(0,0,W,H);
-
-    ctx.font='12px Arial';
-
-
-    /* GRID */
+    c.font='12px Arial';
 
     for(let i=0;i<=5;i++){
 
-      const yy =
-        top+i*ph/5;
+      const yy=top+i*ph/5;
 
-      const val =
+      const val=
         hi-(hi-lo)*i/5;
 
-      ctx.strokeStyle='#29292c';
-      ctx.lineWidth=1;
+      c.strokeStyle='#29292c';
+      c.lineWidth=1;
 
-      ctx.beginPath();
-      ctx.moveTo(left,yy);
-      ctx.lineTo(W-right,yy);
-      ctx.stroke();
+      c.beginPath();
+      c.moveTo(left,yy);
+      c.lineTo(W-right,yy);
+      c.stroke();
 
-      ctx.fillStyle='#888';
-      ctx.textAlign='right';
+      c.fillStyle='#888';
+      c.textAlign='right';
 
-      ctx.fillText(
+      c.fillText(
         shortNumber(val),
         left-9,
         yy+4
       );
     }
 
-
-    /* FILL */
-
     const grad =
-      ctx.createLinearGradient(
+      c.createLinearGradient(
         0,top,
         0,top+ph
       );
@@ -574,96 +488,65 @@ td{
       'rgba(255,255,255,0)'
     );
 
+    c.beginPath();
 
-    ctx.beginPath();
-
-    rows.forEach((r,i)=>
+    rows.forEach((r,i) =>
       i
-        ? ctx.lineTo(x(i),y(r.views))
-        : ctx.moveTo(x(i),y(r.views))
+      ? c.lineTo(x(i),y(r.views))
+      : c.moveTo(x(i),y(r.views))
     );
 
-    ctx.lineTo(
+    c.lineTo(
       x(rows.length-1),
       top+ph
     );
 
-    ctx.lineTo(
+    c.lineTo(
       x(0),
       top+ph
     );
 
-    ctx.closePath();
+    c.closePath();
 
-    ctx.fillStyle=grad;
-    ctx.fill();
+    c.fillStyle=grad;
+    c.fill();
 
+    c.beginPath();
 
-    /* LINE */
-
-    ctx.beginPath();
-
-    rows.forEach((r,i)=>
+    rows.forEach((r,i) =>
       i
-        ? ctx.lineTo(x(i),y(r.views))
-        : ctx.moveTo(x(i),y(r.views))
+      ? c.lineTo(x(i),y(r.views))
+      : c.moveTo(x(i),y(r.views))
     );
 
-    ctx.strokeStyle='#fff';
-    ctx.lineWidth=2.5;
-    ctx.stroke();
+    c.strokeStyle='#fff';
+    c.lineWidth=2.5;
+    c.stroke();
 
+    c.fillStyle='#888';
+    c.textAlign='left';
 
-    /* X LABELS */
-
-    ctx.fillStyle='#888';
-    ctx.textAlign='left';
-
-    ctx.fillText(
+    c.fillText(
       rows[0].date.toLocaleString('en-GB'),
       left,
       H-20
     );
 
-    ctx.textAlign='right';
+    c.textAlign='right';
 
-    ctx.fillText(
+    c.fillText(
       rows.at(-1).date.toLocaleString('en-GB'),
       W-right,
       H-20
     );
-
   }
-
-
-  /* -----------------------------
-     DRAW GAIN GRAPH
-  ----------------------------- */
 
   function drawGainChart(rows){
 
-    if(rows.length < 2){
-      gainCanvas.hidden = true;
-      return;
-    }
+    if(!rows.length) return;
 
-    gainCanvas.hidden = false;
-
-    const dpr =
-      window.devicePixelRatio || 1;
-
-    const rect =
-      gainCanvas.getBoundingClientRect();
-
-    const W = Math.max(rect.width,700);
-    const H = 480;
-
-    gainCanvas.width=W*dpr;
-    gainCanvas.height=H*dpr;
-
-    gainCtx.setTransform(
-      dpr,0,0,dpr,0,0
-    );
+    const {context:c,W,H} =
+      setupCanvas(gainCanvas);
 
     const left=70;
     const right=22;
@@ -673,248 +556,180 @@ td{
     const pw=W-left-right;
     const ph=H-top-bottom;
 
+    const gains=rows.map((r,i) => {
 
-    /* Calculate gains */
+      if(i === 0) return 0;
 
-    const gains = rows.map((r,i)=>({
+      return r.views - rows[i-1].views;
+    });
 
-      date:r.date,
+    const max=Math.max(
+      ...gains,
+      1
+    );
 
-      gain:
-        i===0
-          ? 0
-          : r.views-rows[i-1].views
+    const min=Math.min(
+      ...gains,
+      0
+    );
 
-    }));
+    const range=Math.max(
+      max-min,
+      1
+    );
 
+    const lo=min-range*.08;
+    const hi=max+range*.08;
 
-    const maxGain =
-      Math.max(
-        ...gains.map(x=>x.gain),
-        1
-      );
-
-    const minGain =
-      Math.min(
-        ...gains.map(x=>x.gain),
-        0
-      );
-
-
-    const range =
-      Math.max(maxGain-minGain,1);
-
-    const lo =
-      Math.min(0,minGain-range*.08);
-
-    const hi =
-      maxGain+range*.08;
-
-
-    const x = i =>
+    const x=i =>
       left +
       (gains.length===1
         ? pw/2
         : i/(gains.length-1)*pw);
 
-    const y = v =>
-      top+
+    const y=v =>
+      top +
       (1-(v-lo)/(hi-lo))*ph;
 
+    c.clearRect(0,0,W,H);
 
-    gainCtx.clearRect(0,0,W,H);
-
-    gainCtx.font='12px Arial';
-
-
-    /* GRID */
+    c.font='12px Arial';
 
     for(let i=0;i<=5;i++){
 
-      const yy =
-        top+i*ph/5;
+      const yy=top+i*ph/5;
 
-      const val =
+      const val=
         hi-(hi-lo)*i/5;
 
-      gainCtx.strokeStyle='#29292c';
-      gainCtx.lineWidth=1;
+      c.strokeStyle='#29292c';
+      c.lineWidth=1;
 
-      gainCtx.beginPath();
-      gainCtx.moveTo(left,yy);
-      gainCtx.lineTo(W-right,yy);
-      gainCtx.stroke();
+      c.beginPath();
+      c.moveTo(left,yy);
+      c.lineTo(W-right,yy);
+      c.stroke();
 
-      gainCtx.fillStyle='#888';
-      gainCtx.textAlign='right';
+      c.fillStyle='#888';
+      c.textAlign='right';
 
-      gainCtx.fillText(
+      c.fillText(
         shortNumber(val),
         left-9,
         yy+4
       );
-
     }
 
+    const zeroY=y(0);
 
-    /* ZERO LINE */
+    c.strokeStyle='#555';
+    c.lineWidth=1.5;
 
-    if(lo <= 0 && hi >= 0){
+    c.beginPath();
+    c.moveTo(left,zeroY);
+    c.lineTo(W-right,zeroY);
+    c.stroke();
 
-      const zeroY=y(0);
+    c.beginPath();
 
-      gainCtx.strokeStyle='#555';
-      gainCtx.lineWidth=1;
-
-      gainCtx.beginPath();
-      gainCtx.moveTo(left,zeroY);
-      gainCtx.lineTo(W-right,zeroY);
-      gainCtx.stroke();
-
-    }
-
-
-    /* GAIN LINE */
-
-    gainCtx.beginPath();
-
-    gains.forEach((r,i)=>
+    gains.forEach((g,i) =>
       i
-        ? gainCtx.lineTo(x(i),y(r.gain))
-        : gainCtx.moveTo(x(i),y(r.gain))
+      ? c.lineTo(x(i),y(g))
+      : c.moveTo(x(i),y(g))
     );
 
-    gainCtx.strokeStyle='#fff';
-    gainCtx.lineWidth=2;
+    c.strokeStyle='#fff';
+    c.lineWidth=2;
 
-    gainCtx.stroke();
+    c.stroke();
 
+    gains.forEach((g,i)=>{
 
-    /* POINTS */
+      c.beginPath();
 
-    gains.forEach((r,i)=>{
-
-      gainCtx.beginPath();
-
-      gainCtx.arc(
+      c.arc(
         x(i),
-        y(r.gain),
-        3,
+        y(g),
+        Math.abs(g) > 1000 ? 5 : 3,
         0,
         Math.PI*2
       );
 
-      gainCtx.fillStyle='#fff';
-      gainCtx.fill();
+      c.fillStyle =
+        Math.abs(g) > 1000
+        ? '#fff'
+        : '#aaa';
 
+      c.fill();
     });
 
+    c.fillStyle='#888';
+    c.textAlign='left';
 
-    /* X LABELS */
-
-    gainCtx.fillStyle='#888';
-    gainCtx.textAlign='left';
-
-    gainCtx.fillText(
-      gains[0].date.toLocaleString('en-GB'),
+    c.fillText(
+      rows[0].date.toLocaleString('en-GB'),
       left,
       H-20
     );
 
-    gainCtx.textAlign='right';
+    c.textAlign='right';
 
-    gainCtx.fillText(
-      gains.at(-1).date.toLocaleString('en-GB'),
+    c.fillText(
+      rows.at(-1).date.toLocaleString('en-GB'),
       W-right,
       H-20
     );
-
   }
-
-
-  /* -----------------------------
-     DATA TABLE
-  ----------------------------- */
 
   function drawTable(rows){
 
-    const table =
+    const tbody =
       document.getElementById('dataTable');
 
-    table.innerHTML='';
+    tbody.innerHTML='';
 
-    if(!rows.length)
-      return;
+    const reversed =
+      [...rows].reverse();
 
+    reversed.forEach((row,index)=>{
 
-    for(let i=rows.length-1;i>=0;i--){
+      const globalIndex =
+        allRows.indexOf(row);
 
-      const row=rows[i];
+      const previous =
+        globalIndex > 0
+        ? allRows[globalIndex-1]
+        : null;
 
       const gain =
-        i===0
-          ? 0
-          : row.views-rows[i-1].views;
+        previous
+        ? row.views-previous.views
+        : 0;
 
       const tr =
         document.createElement('tr');
 
-
       if(gain >= 1000)
-        tr.classList.add('spike');
-
-
-      const time =
-        row.date.toLocaleString(
-          'en-GB',
-          {
-            day:'2-digit',
-            month:'2-digit',
-            year:'numeric',
-            hour:'2-digit',
-            minute:'2-digit',
-            second:'2-digit'
-          }
-        );
-
+        tr.className='spike';
 
       tr.innerHTML=`
-
-        <td>${time}</td>
-
+        <td>${row.date.toLocaleString('en-GB')}</td>
         <td>${number(row.views)}</td>
-
-        <td class="${
-          gain>0
-            ? 'gain-positive'
-            : ''
-        }">
-          ${gain>0?'+':''}${number(gain)}
+        <td class="gain-positive">
+          ${gain >= 0 ? '+' : ''}${number(gain)}
         </td>
-
       `;
 
-      table.appendChild(tr);
-
-    }
-
+      tbody.appendChild(tr);
+    });
   }
 
+  function updateStats(){
 
-  /* -----------------------------
-     UPDATE STATS
-  ----------------------------- */
+    if(!allRows.length) return;
 
-  function updateStats(rows){
-
-    if(!rows.length)
-      return;
-
-    const first =
-      allRows[0];
-
-    const last =
-      allRows.at(-1);
+    const first=allRows[0];
+    const last=allRows.at(-1);
 
     const gained =
       last.views-first.views;
@@ -922,32 +737,28 @@ td{
     const hours =
       (last.date-first.date)/3600000;
 
-
     document.getElementById('current')
-      .textContent =
-      number(last.views);
+      .textContent=number(last.views);
 
     document.getElementById('gained')
-      .textContent =
-      number(gained);
+      .textContent=number(gained);
 
     document.getElementById('rate')
-      .textContent =
+      .textContent=
       hours>0
-        ? number(Math.round(gained/hours))
-        : '—';
+      ? number(Math.round(gained/hours))
+      : '—';
 
     document.getElementById('duration')
-      .textContent =
+      .textContent=
       hours<1
-        ? Math.round(hours*60)+'m'
-        : hours<24
-          ? hours.toFixed(1)+'h'
-          : (hours/24).toFixed(1)+'d';
-
+      ? Math.round(hours*60)+'m'
+      : hours<24
+      ? hours.toFixed(1)+'h'
+      : (hours/24).toFixed(1)+'d';
 
     document.getElementById('connection')
-      .textContent =
+      .textContent=
       'Live · updated '+
       last.date.toLocaleTimeString(
         'en-GB',
@@ -956,83 +767,23 @@ td{
           minute:'2-digit'
         }
       );
-
-
-    document.getElementById('status')
-      .textContent =
-      `${allRows.length} data points · Automatically checking views.csv every 60 seconds`;
-
   }
-
-
-  /* -----------------------------
-     MAIN DRAW
-  ----------------------------- */
 
   function draw(){
 
-    if(!allRows.length){
-
-      empty.hidden=false;
-      canvas.hidden=true;
-      gainCanvas.hidden=true;
-
-      return;
-
-    }
-
-
-    empty.hidden=true;
-
-    const filtered =
+    const rows =
       filterRows(allRows);
 
+    updateStats();
 
-    drawTotalChart(filtered);
-    drawGainChart(filtered);
-    drawTable(filtered);
+    drawTotalChart(rows);
+    drawGainChart(rows);
+    drawTable(rows);
 
-    updateStats(filtered);
-
+    document.getElementById('status')
+      .textContent=
+      `${allRows.length} data points · Automatically checking views.csv every 60 seconds`;
   }
-
-
-  /* -----------------------------
-     RANGE BUTTONS
-  ----------------------------- */
-
-  document
-    .querySelectorAll('[data-range]')
-    .forEach(button=>{
-
-      button.addEventListener(
-        'click',
-        ()=>{
-
-          selectedRange =
-            button.dataset.range;
-
-
-          document
-            .querySelectorAll('[data-range]')
-            .forEach(b=>
-              b.classList.remove('active')
-            );
-
-
-          button.classList.add('active');
-
-          draw();
-
-        }
-      );
-
-    });
-
-
-  /* -----------------------------
-     LOAD CSV
-  ----------------------------- */
 
   async function refresh(){
 
@@ -1046,49 +797,63 @@ td{
           }
         );
 
-
       if(!response.ok)
         throw new Error(
           'HTTP '+response.status
         );
 
-
       const text =
         await response.text();
 
+      allRows=parseCSV(text);
 
-      allRows =
-        parseCSV(text)
-          .sort(
-            (a,b)=>a.date-b.date
-          );
-
+      allRows.sort(
+        (a,b)=>a.date-b.date
+      );
 
       draw();
-
 
     }catch(e){
 
       document.getElementById(
         'connection'
-      ).textContent =
+      ).textContent=
         'Waiting for views.csv…';
 
+      if(!canvas.hidden){
 
-      document.getElementById(
-        'status'
-      ).textContent =
-        'Could not read views.csv — '+
-        e.message;
-
+        document.getElementById(
+          'status'
+        ).textContent=
+          'Could not read views.csv — '+
+          e.message;
+      }
     }
-
   }
 
+  document
+    .querySelectorAll('.range-btn')
+    .forEach(button => {
 
-  /* -----------------------------
-     START
-  ----------------------------- */
+      button.addEventListener(
+        'click',
+        () => {
+
+          selectedRange =
+            button.dataset.range;
+
+          document
+            .querySelectorAll('.range-btn')
+            .forEach(b =>
+              b.classList.remove('active')
+            );
+
+          button.classList.add('active');
+
+          draw();
+        }
+      );
+    });
 
   refresh();
 
@@ -1097,10 +862,9 @@ td{
     60000
   );
 
-
   window.addEventListener(
     'resize',
-    draw
+    refresh
   );
 
 })();
@@ -1108,4 +872,3 @@ td{
 
 </body>
 </html>
-```
