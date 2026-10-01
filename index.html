@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YouTube View Tracker</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d0d0f;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px}
+.top{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:25px;margin:0 0 5px}.sub{color:#999;font-size:14px}
+.badge{font-size:12px;color:#aaa;border:1px solid #333;border-radius:20px;padding:7px 10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.card{background:#171719;border:1px solid #29292c;border-radius:12px;padding:15px}
+.label{font-size:12px;color:#999;margin-bottom:7px}.value{font-size:24px;font-weight:700}
+.panel{background:#171719;border:1px solid #29292c;border-radius:12px;padding:18px}
+.chart-wrap{width:100%;overflow-x:auto}canvas{display:block;width:100%;height:480px;min-width:700px}
+.empty{text-align:center;padding:170px 10px;color:#777}.status{margin-top:10px;color:#888;font-size:13px}
+@media(max-width:750px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>YouTube View Tracker</h1>
+      <div class="sub">yyV-vSH1sSY · automatic 60-second refresh</div>
+    </div>
+    <div class="badge" id="connection">Waiting for views.csv…</div>
+  </div>
+
+  <div class="stats">
+    <div class="card"><div class="label">CURRENT VIEWS</div><div class="value" id="current">—</div></div>
+    <div class="card"><div class="label">VIEWS GAINED</div><div class="value" id="gained">—</div></div>
+    <div class="card"><div class="label">VIEWS / HOUR</div><div class="value" id="rate">—</div></div>
+    <div class="card"><div class="label">TRACKING TIME</div><div class="value" id="duration">—</div></div>
+  </div>
+
+  <div class="panel">
+    <div id="empty" class="empty">Waiting for <b>views.csv</b> in this directory…</div>
+    <div class="chart-wrap"><canvas id="chart" hidden></canvas></div>
+    <div class="status" id="status"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const csvURL = './views.csv';
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const empty = document.getElementById('empty');
+
+  const number = n => Number(n).toLocaleString('en-GB');
+  const shortNumber = n => {
+    if(Math.abs(n)>=1e9)return (n/1e9).toFixed(1)+'B';
+    if(Math.abs(n)>=1e6)return (n/1e6).toFixed(1)+'M';
+    if(Math.abs(n)>=1e3)return (n/1e3).toFixed(1)+'K';
+    return Math.round(n).toString();
+  };
+
+  function parseCSV(text){
+    const lines=text.trim().split(/\r?\n/);
+    if(lines.length<2)return [];
+    const headers=lines[0].split(',').map(x=>x.trim());
+    return lines.slice(1).map(line=>{
+      const vals=[]; let cur='', quote=false;
+      for(const c of line){
+        if(c==='"'){quote=!quote;continue}
+        if(c===','&&!quote){vals.push(cur);cur=''}else cur+=c;
+      }
+      vals.push(cur);
+      const o={};
+      headers.forEach((h,i)=>o[h]=vals[i]??'');
+      return {date:new Date(o.timestamp),views:Number(o.views)};
+    }).filter(x=>!isNaN(x.date)&&Number.isFinite(x.views));
+  }
+
+  function draw(rows){
+    if(!rows.length){
+      empty.hidden=false; canvas.hidden=true;
+      return;
+    }
+
+    empty.hidden=true; canvas.hidden=false;
+    rows.sort((a,b)=>a.date-b.date);
+
+    const dpr=window.devicePixelRatio||1;
+    const rect=canvas.getBoundingClientRect();
+    const W=Math.max(rect.width,700), H=480;
+    canvas.width=W*dpr; canvas.height=H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const left=70,right=22,top=25,bottom=55;
+    const pw=W-left-right, ph=H-top-bottom;
+    const min=Math.min(...rows.map(r=>r.views));
+    const max=Math.max(...rows.map(r=>r.views));
+    const range=Math.max(max-min,1);
+    const lo=Math.max(0,min-range*.08);
+    const hi=max+range*.08;
+    const x=i=>left+(rows.length===1?pw/2:i/(rows.length-1)*pw);
+    const y=v=>top+(1-(v-lo)/(hi-lo))*ph;
+
+    ctx.clearRect(0,0,W,H);
+    ctx.font='12px Arial';
+
+    for(let i=0;i<=5;i++){
+      const yy=top+i*ph/5;
+      const val=hi-(hi-lo)*i/5;
+      ctx.strokeStyle='#29292c';
+      ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(W-right,yy);ctx.stroke();
+      ctx.fillStyle='#888';ctx.textAlign='right';
+      ctx.fillText(shortNumber(val),left-9,yy+4);
+    }
+
+    const grad=ctx.createLinearGradient(0,top,0,top+ph);
+    grad.addColorStop(0,'rgba(255,255,255,.15)');
+    grad.addColorStop(1,'rgba(255,255,255,0)');
+
+    ctx.beginPath();
+    rows.forEach((r,i)=>i?ctx.lineTo(x(i),y(r.views)):ctx.moveTo(x(i),y(r.views)));
+    ctx.lineTo(x(rows.length-1),top+ph);ctx.lineTo(x(0),top+ph);ctx.closePath();
+    ctx.fillStyle=grad;ctx.fill();
+
+    ctx.beginPath();
+    rows.forEach((r,i)=>i?ctx.lineTo(x(i),y(r.views)):ctx.moveTo(x(i),y(r.views)));
+    ctx.strokeStyle='#fff';ctx.lineWidth=2.5;ctx.stroke();
+
+    ctx.fillStyle='#888';ctx.textAlign='left';
+    ctx.fillText(rows[0].date.toLocaleString('en-GB'),left,H-20);
+    ctx.textAlign='right';
+    ctx.fillText(rows.at(-1).date.toLocaleString('en-GB'),W-right,H-20);
+
+    const first=rows[0], last=rows.at(-1);
+    const gained=last.views-first.views;
+    const hours=(last.date-first.date)/3600000;
+
+    document.getElementById('current').textContent=number(last.views);
+    document.getElementById('gained').textContent=number(gained);
+    document.getElementById('rate').textContent=hours>0?number(Math.round(gained/hours)):'—';
+    document.getElementById('duration').textContent=
+      hours<1?Math.round(hours*60)+'m':
+      hours<24?hours.toFixed(1)+'h':
+      (hours/24).toFixed(1)+'d';
+
+    document.getElementById('connection').textContent='Live · updated '+last.date.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('status').textContent=
+      `${rows.length} data points · Automatically checking views.csv every 60 seconds`;
+  }
+
+  async function refresh(){
+    try{
+      // Cache-busting is necessary because browsers may otherwise cache the CSV.
+      const response=await fetch(csvURL+'?t='+Date.now(),{cache:'no-store'});
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      const text=await response.text();
+      draw(parseCSV(text));
+    }catch(e){
+      document.getElementById('connection').textContent='Waiting for views.csv…';
+      if(!canvas.hidden)document.getElementById('status').textContent='Could not read views.csv — '+e.message;
+    }
+  }
+
+  refresh();
+  setInterval(refresh,60000);
+  window.addEventListener('resize',refresh);
+})();
+</script>
+</body>
+</html>
